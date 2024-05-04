@@ -1,0 +1,6 @@
+dependencies {
+    implementation("edu.noia.myoffice:myoffice-common-domain:${version}")
+    implementation("com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}")
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework:spring-tx'
+}

@@ -1,0 +1,8 @@
+.idea/
+.gradle/
+**/out/
+**/build/
+**/*.iml
+**/node_modules/
+/myoffice-sale-ui/src/main/resources/static/
+/myoffice-sale-ui/src/ui/coverage/

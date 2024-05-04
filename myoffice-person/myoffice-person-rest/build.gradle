@@ -1,0 +1,5 @@
+dependencies {
+    compile "edu.noia.myoffice:myoffice-person-domain:${version}"
+    compile 'org.springframework.boot:spring-boot-starter'
+    compile 'org.springframework.boot:spring-boot-starter-web'
+}

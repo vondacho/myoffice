@@ -1,0 +1,15 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+.children-use-full-width > mat-form-field {
+  width: 100%;
+}
+
+.children-use-half-width > mat-form-field {
+  width: 45%;
+  margin-right: 10px;
+}
+
+.children-use-half-width > .mat-icon-button {
+  width: 24px;
+}

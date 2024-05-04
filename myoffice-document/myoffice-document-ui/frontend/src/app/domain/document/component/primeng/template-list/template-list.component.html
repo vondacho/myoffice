@@ -1,0 +1,33 @@
+<p-messages [value]="messages"></p-messages>
+
+<p-dataTable #dt
+             [value]="elements"
+             [responsive]="true"
+             [lazy]="true"
+             [first]="page.number"
+             [rows]="page.size"
+             [totalRecords]="page.totalElements"
+             (onLazyLoad)="handleLoadLazy($event)"
+             (onEditComplete)="handleEditComplete($event)"
+             paginator="true"
+             alwaysShowPaginator="false"
+             [rowsPerPageOptions]="[5,10,20]"
+             [editable]="true"
+             selectionMode="single"
+             [(selection)]="selection"
+             [contextMenu]="cm"
+             dataKey="id">
+  <p-column field="name"
+            header="Nom"
+            sortable="true"
+            [filter]="true"
+            filterPlaceholder="Filtre"
+            [editable]="true"></p-column>
+  <ng-template pTemplate="emptymessage">
+    Aucun enregistrement
+  </ng-template>
+</p-dataTable>
+
+<p-contextMenu #cm [model]="contextMenu"></p-contextMenu>
+
+<button pButton type="button" icon="fa-new" iconPos="left" label="Nouveau"(click)="new()"></button>

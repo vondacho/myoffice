@@ -1,0 +1,40 @@
+<p-dataTable #dt
+             [value]="elements"
+             sortMode="multiple"
+             [(selection)]="selection"
+             [responsive]="true"
+             paginator="true"
+             [lazy]="true"
+             [first]="page.first"
+             [rows]="page.size"
+             [totalRecords]="page.totalElements"
+             (onLazyLoad)="loadLazy($event)"
+             dataKey="state.id"
+             immutable="true"
+             alwaysShowPaginator="false"
+             [rowsPerPageOptions]="[5,10,15]">
+    <p-column selectionMode="multiple"></p-column>
+    <p-column field="state.lastName"
+              header="Nom"
+              sortable="true"
+              [filter]="true"
+              filterPlaceholder="Filtre"
+              [editable]="true"></p-column>
+    <p-column field="state.firstName"
+              header="Prénom"></p-column>
+    <p-column field="state.zip"
+              header="Code postal"
+              sortable="true"
+              [filter]="true"
+              filterPlaceholder="Filtre"></p-column>
+    <p-column field="state.city"
+              header="Localité"
+              sortable="true"
+              [filter]="true"
+              filterPlaceholder="Filtre"></p-column>
+    <ng-template pTemplate="emptymessage">
+        Aucun enregistrement
+    </ng-template>
+</p-dataTable>
+
+<button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>

@@ -1,0 +1,4 @@
+dependencies {
+    compile "edu.noia.myoffice:myoffice-common-domain:${myofficeCommonVersion}"
+    compile "edu.noia.myoffice:myoffice-common-util:${myofficeCommonVersion}"
+}

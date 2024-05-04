@@ -1,0 +1,3 @@
+rootProject.name = 'myoffice-address'
+include 'myoffice-address-domain', 'myoffice-address-rest', 'myoffice-address-data'
+

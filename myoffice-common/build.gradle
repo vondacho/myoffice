@@ -1,0 +1,75 @@
+buildscript {
+    ext {
+        springBootVersion = '2.0.0.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5'
+    }
+}
+
+allprojects {
+    apply plugin: 'java'
+    group 'edu.noia.myoffice'
+    version = '0.0.15'
+    repositories {
+        jcenter()
+        mavenLocal()
+        maven {
+            name 'mavenRemote'
+            url myMavenRepoReadUrl
+            credentials {
+                username myMavenRepoReadUsername
+                password myMavenRepoReadPassword
+            }
+        }
+    }
+}
+
+subprojects {
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'maven-publish'
+    sourceCompatibility = 19
+    ext {
+        lombokVersion = '1.16.18'
+        mokitoVersion = '2.8.47'
+        jacksonVersion = '2.9.2'
+        h2DatabaseVersion = '1.4.196'
+        hsqlDatabaseVersion = '2.4.0'
+    }
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+        }
+    }
+    dependencies {
+        compileOnly("org.projectlombok:lombok")
+        annotationProcessor("org.projectlombok:lombok")
+        testImplementation("org.mockito:mockito-core:${mokitoVersion}")
+    }
+    jar {
+        manifest.attributes provider: 'gradle'
+    }
+    publishing {
+        repositories {
+            mavenLocal()
+            maven {
+                name 'mavenRemote'
+                url myMavenRepoWriteUrl
+                credentials {
+                    username myMavenRepoWriteUsername
+                    password myMavenRepoWritePassword
+                }
+            }
+        }
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+            }
+        }
+    }
+}

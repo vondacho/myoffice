@@ -1,0 +1,58 @@
+configurations {
+    jaxb
+}
+
+// tag::wsdl[]
+task genJaxb {
+    ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
+    ext.classesDir = "${buildDir}/classes/java/main"
+    ext.schema = "${projectDir}/src/main/resources/swisspost/adrCheckerExterne-V4-02-00.wsdl"
+
+    outputs.dir classesDir
+
+    doLast() {
+        project.ant {
+            taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask", classpath: configurations.jaxb.asPath
+            mkdir(dir: sourcesDir)
+            mkdir(dir: classesDir)
+
+            xjc(destdir: sourcesDir, schema: schema, package: "edu.noia.myoffice.address.data.rest.adapter.swisspost") {
+                arg(value: "-wsdl")
+                produces(dir: sourcesDir, includes: "**/*.java")
+            }
+
+            javac(destdir: classesDir, source: 10, target: 10, debug: true,
+                    debugLevel: "lines,vars,source",
+                    classpath: configurations.jaxb.asPath) {
+                src(path: sourcesDir)
+                include(name: "**/*.java")
+                include(name: "*.java")
+            }
+
+            copy(todir: classesDir) {
+                fileset(dir: sourcesDir, erroronmissingdir: false) {
+                    exclude(name: "**/*.java")
+                }
+            }
+        }
+    }
+}
+
+task compile(dependsOn: genJaxb)
+
+ext {
+    httpClientVersion = '4.5.4'
+    jaxbVersion = '2.3.1'
+    istackVersion = '3.0.7'
+}
+
+dependencies {
+    compile "edu.noia.myoffice:myoffice-address-domain:${version}"
+    compile 'org.springframework.boot:spring-boot-starter-web-services'
+    compile "org.apache.httpcomponents:httpclient:${httpClientVersion}"
+    compile(files(genJaxb.classesDir).builtBy(genJaxb))
+    compile "com.sun.xml.bind:jaxb-impl:${jaxbVersion}"
+    compile "com.sun.istack:istack-commons-runtime:${istackVersion}"
+    jaxb "org.glassfish.jaxb:jaxb-xjc:${jaxbVersion}"
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+}

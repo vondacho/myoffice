@@ -1,0 +1,9 @@
+dependencies {
+    compile("edu.noia.myoffice:myoffice-common-common:${myofficeCommonVersion}")
+    compile("edu.noia.myoffice:myoffice-sale-common:${version}")
+    compile("edu.noia.myoffice:myoffice-sale-application:${version}")
+    compile 'org.springframework.boot:spring-boot-starter'
+    compile("org.axonframework:axon-spring-boot-starter:${axonVersion}") {
+        exclude group: 'org.axonframework', module: 'axon-server-connector'
+    }
+}

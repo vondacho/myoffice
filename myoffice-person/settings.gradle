@@ -1,0 +1,4 @@
+rootProject.name = 'myoffice-person'
+include 'myoffice-person-rest',
+'myoffice-person-data',
+'myoffice-person-domain'

@@ -1,0 +1,181 @@
+buildscript {
+    ext {
+        springBootVersion = '2.2.1.RELEASE'
+    }
+    repositories {
+        jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5'
+        classpath 'io.franzbecker:gradle-lombok:1.14'
+    }
+}
+
+allprojects {
+    apply plugin: 'java'
+    group 'edu.noia.myoffice'
+    version = '0.4.0'
+    repositories {
+        jcenter()
+        mavenCentral()
+        mavenLocal()
+        maven { url "http://repo.spring.io/milestone/" }
+        maven {
+            name 'mavenRemote'
+            url myMavenRepoReadUrl
+            credentials {
+                username myMavenRepoReadUsername
+                password myMavenRepoReadPassword
+            }
+        }
+    }
+}
+
+gradle.taskGraph.whenReady { graph ->
+    def badTasks = ['startScripts', 'distTar', 'distZip']
+    graph.allTasks.findAll { it.name in badTasks }.each { task ->
+        task.enabled = false
+    }
+}
+
+subprojects {
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'maven-publish'
+    apply plugin: 'org.sonarqube'
+    apply plugin: 'io.franzbecker.gradle-lombok'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    ext {
+        myofficeCommonVersion = '0.14.2'
+        springCloudVersion = 'Greenwich.RELEASE'
+        springfoxVersion = '2.9.2'
+        lombokVersion = '1.18.8'
+        mockitoVersion = '3.0.0'
+        jacksonVersion = '2.9.8'
+        axonVersion = '4.2'
+        h2DatabaseVersion = '1.4.199'
+        hsqlDatabaseVersion = '2.4.1'
+        psqlDatabaseVersion = '42.2.5'
+        flywayVersion = '6.0.1'
+        vavrVersion = '0.10.2'
+    }
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+    dependencies {
+        compileOnly("org.projectlombok:lombok:${lombokVersion}")
+        compile "io.vavr:vavr:${vavrVersion}"
+        testCompile "org.mockito:mockito-core:${mockitoVersion}"
+        testCompile 'nl.jqno.equalsverifier:equalsverifier:3.1.9'
+        testCompile 'org.springframework.boot:spring-boot-starter-test'
+    }
+    publishing {
+        repositories {
+            mavenLocal()
+            maven {
+                name 'mavenRemote'
+                url myMavenRepoWriteUrl
+                credentials {
+                    username myMavenRepoWriteUsername
+                    password myMavenRepoWritePassword
+                }
+            }
+        }
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+            }
+        }
+    }
+    lombok {
+        version = "${lombokVersion}"
+        sha256 = "" // skip verify Lombok task
+    }
+    task install(dependsOn: publishToMavenLocal)
+    task deploy(dependsOn: publish)
+
+    bootJar.enabled = false
+    jar.enabled = true
+}
+
+project(':myoffice-sale-common') {
+    dependencies {
+        compile project(':myoffice-sale-domain')
+    }
+}
+
+project(':myoffice-sale-batch') {
+    dependencies {
+        compile project(':myoffice-sale-domain'),
+                project(':myoffice-sale-query-data')
+    }
+}
+
+project(':myoffice-sale-command') {
+    dependencies {
+        compile project(':myoffice-sale-common'),
+                project(':myoffice-sale-application')
+    }
+}
+
+project(':myoffice-sale-command-data') {
+    dependencies {
+        compile project(':myoffice-sale-command')
+    }
+}
+
+project(':myoffice-sale-query') {
+    dependencies {
+        compile project(':myoffice-sale-domain')
+    }
+}
+
+project(':myoffice-sale-query-data') {
+    dependencies {
+        compile project(':myoffice-sale-query')
+    }
+}
+
+project(':myoffice-sale-event') {
+    dependencies {
+        compile project(':myoffice-sale-application'),
+                project(':myoffice-sale-domain')
+    }
+}
+
+project(':myoffice-sale-rest') {
+    dependencies {
+        compile project(':myoffice-sale-common'),
+                project(':myoffice-sale-application'),
+                project(':myoffice-sale-query-data')
+    }
+}
+
+project(':myoffice-sale-application') {
+    dependencies {
+        compile project(':myoffice-sale-common'),
+                project(':myoffice-sale-domain')
+    }
+}
+
+project(':myoffice-sale-boot') {
+    dependencies {
+        compile project(':myoffice-sale-domain'),
+                project(':myoffice-sale-application'),
+                project(':myoffice-sale-common'),
+                project(':myoffice-sale-command'),
+                project(':myoffice-sale-command-data'),
+                project(':myoffice-sale-query'),
+                project(':myoffice-sale-query-data'),
+                project(':myoffice-sale-event'),
+                project(':myoffice-sale-rest')
+    }
+}

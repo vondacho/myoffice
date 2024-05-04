@@ -1,0 +1,18 @@
+<div class="children-use-full-width">
+  <mat-form-field>
+    <input [formControl]="fcFolder" [matAutocomplete]="auto" aria-label="Folder" matInput
+           placeholder="Sélectionner un dossier"
+           type="text">
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+      <mat-option *ngFor="let folder of folders$ | async" [value]="folder">
+        {{folder.name}}
+      </mat-option>
+    </mat-autocomplete>
+    <button (click)="reset()" aria-label="Clear" mat-button mat-icon-button matSuffix>
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+  <button (click)="select()" *ngIf="canBeApplied()" mat-raised-button mat-icon-button matTooltip="Select the folder">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>

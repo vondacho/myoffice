@@ -1,0 +1,14 @@
+rootProject.name = 'myoffice-sale'
+include 'myoffice-sale-domain',
+        'myoffice-sale-common',
+        'myoffice-sale-query',
+        'myoffice-sale-command',
+        'myoffice-sale-batch',
+        'myoffice-sale-rest',
+        'myoffice-sale-query-data',
+        'myoffice-sale-command-data',
+        'myoffice-sale-application',
+        'myoffice-sale-ui',
+        'myoffice-sale-boot',
+        'myoffice-sale-event'
+

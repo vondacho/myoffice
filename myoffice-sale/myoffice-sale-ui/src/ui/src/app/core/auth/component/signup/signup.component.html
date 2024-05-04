@@ -1,0 +1,39 @@
+<div class="container">
+  <div>
+    <mat-card class="example-card">
+      <mat-card-header>
+        <mat-card-title>Sign up</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="fg" class="example-form" method="POST">
+          <table cellspacing="0" class="example-full-width">
+            <tr>
+              <td>
+                <mat-form-field class="example-full-width">
+                  <input formControlName="email" matInput placeholder="E-mail" type="email">
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="example-full-width">
+                  <input formControlName="username" matInput placeholder="Username">
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="example-full-width">
+                  <input formControlName="password" matInput placeholder="Password" type="password">
+                </mat-form-field>
+              </td>
+            </tr>
+          </table>
+        </form>
+      </mat-card-content>
+      <mat-card-actions>
+        <button (click)="signUp()" [disabled]="fg.invalid" color="primary" mat-raised-button>Sign up</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
